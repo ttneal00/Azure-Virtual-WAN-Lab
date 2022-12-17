@@ -27,7 +27,7 @@ param firewallPolicyName string
 param azfwskuname string
 param azfwskutier string
 
-// vHubConnections
+// vHubConnections Parameters
 
 param allowHubToRemoteVnetTransit bool = true
 param allowRemoteVnetToUseHubVnetGateways bool = true
