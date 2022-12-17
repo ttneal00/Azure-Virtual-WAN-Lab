@@ -1,0 +1,1 @@
+New-AzSubscriptionDeployment -name Demosubdeploy -Location eastus -TemplateFile "./main.bicep"  -WhatIf

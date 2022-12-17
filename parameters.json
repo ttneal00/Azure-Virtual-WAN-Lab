@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "location": {
+            "value" : "eastus"
+        },
+        "NetworkRGName" :{
+            "value" : "ConnectRG"
+        },
+        "Spoke01Name" : {
+            "value": "Spoke-01"
+        },
+        "Spoke02Name" : {
+            "value": "Spoke-02"
+        },
+        "Spoke03Name" : {
+            "value": "Spoke-03"
+        },
+        "Spoke01Address" : {
+            "value": "10.120."
+        },
+        "Spoke02Address" : {
+            "value": "172.16."
+        },
+        "Spoke03Address" : {
+            "value": "172.20."
+        },
+        "Subnet01" : {
+            "value": "0.0/24"
+        },
+        "Subnet02" : {
+            "value": "10.0/24"
+        } ,
+        "vHubName" : {
+            "value": "Vhub01"
+        },
+        "vWANname" :{
+            "value": "vWAN01"
+        },
+        "vhubConnectionName01" :{
+            "value": "vhubConnectionName01"
+        },
+        "vhubAddress" : {
+            "value": "10.140."
+        },
+        "firewallName" : {
+            "value": "AZFW"
+        },
+        "firewallPolicyName" : {
+            "value": "FWPolicy-01"
+        },
+        "azfwskuname" : {
+            "value": "AZFW_Hub"
+        },
+        "azfwskutier" : {
+            "value": "Standard"
+        },
+        "destinationType" :{
+            "value": "CIDR"
+        },
+        "nextHopType" :{
+            "value": "ResourceId"
+        },  
+        "routetTblname" :{
+            "value": "vHubRTTable"
+        }
+    }
+}
