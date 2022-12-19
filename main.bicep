@@ -20,7 +20,8 @@ param destinationType string
 param nextHopType string
 param routetTblname string
 param vhubConnectionName01 string
-
+param vhubConnectionName02 string
+param vhubConnectionName03 string
 
 // Firewall Parameters
 param firewallPolicyName string
@@ -233,12 +234,19 @@ module firewall 'modules/AzureFirewall.bicep' = {
   name: firewallName
   params: {
     azfwname: firewallName
-    azfwpoliyname: firewallPolicyName
+    azfwpoliyname: FWPolicy01.name
     azfwskuname: azfwskuname
     azfwskutier: azfwskutier
     location: location
     vhubname: vhub.name
   }
+dependsOn: [
+  vhub
+  vWAN
+  Spoke02
+  Spoke01
+  Spoke03
+]
 }
 
 module vWanRouteTable 'modules/routetable.bicep' = {
@@ -252,6 +260,10 @@ module vWanRouteTable 'modules/routetable.bicep' = {
     vhubname: vhub.name
     routetTblname: routetTblname
   }
+  dependsOn: [
+    vhub
+    firewall
+  ]
 }
 
 module vhubConnection01 'modules/vhubnetworkconnection.bicep' = {
@@ -267,4 +279,64 @@ module vhubConnection01 'modules/vhubnetworkconnection.bicep' = {
     vhubconnectionname: vhubConnectionName01
     vhubname: vhub.name
   }
+  dependsOn: [
+    Spoke01
+    vhub
+    vWanRouteTable
+  ]
+}
+
+module vhubConnection03 'modules/vhubnetworkconnection.bicep' = {
+  scope: resourceGroup(NetworkRGName)
+  name: vhubConnectionName03
+  params: {
+    allowHubToRemoteVnetTransit: allowHubToRemoteVnetTransit
+    allowRemoteVnetToUseHubVnetGateways: allowRemoteVnetToUseHubVnetGateways
+    enableInternetSecurity: enableInternetSecurity
+    labels: labels03
+    RouteTableName: vWanRouteTable.name
+    SpokeName: Spoke03.name
+    vhubconnectionname: vhubConnectionName01
+    vhubname: vhub.name
+  }
+  dependsOn: [
+    Spoke03
+    vhub
+    vWanRouteTable
+  ]
+}
+
+module vhubConnection02 'modules/vhubnetworkconnection.bicep' = {
+  scope: resourceGroup(NetworkRGName)
+  name: vhubConnectionName02
+  params: {
+    allowHubToRemoteVnetTransit: allowHubToRemoteVnetTransit
+    allowRemoteVnetToUseHubVnetGateways: allowRemoteVnetToUseHubVnetGateways
+    enableInternetSecurity: enableInternetSecurity
+    labels: labels02
+    RouteTableName: vWanRouteTable.name
+    SpokeName: Spoke02.name
+    vhubconnectionname: vhubConnectionName01
+    vhubname: vhub.name
+  }
+  dependsOn: [
+    Spoke02
+    vhub
+    vWanRouteTable
+  ]
+}
+
+module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
+  scope: resourceGroup(NetworkRGName)
+  name:  firewallPolicyName
+  params: {
+    azfwpolname: firewallPolicyName
+    azfwrcgrppriority: 500
+    ruleCollectionName: 'Default-Internat'
+    fwpolthreatintelmode: 'Alert'
+    location: location
+  }
+  dependsOn: [
+    NetworkRG
+  ]
 }
