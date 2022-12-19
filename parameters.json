@@ -41,6 +41,12 @@
         "vhubConnectionName01" :{
             "value": "vhubConnectionName01"
         },
+        "vhubConnectionName02" :{
+            "value": "vhubConnectionName02"
+        },
+        "vhubConnectionName03" :{
+            "value": "vhubConnectionName03"
+        },
         "vhubAddress" : {
             "value": "10.140."
         },
