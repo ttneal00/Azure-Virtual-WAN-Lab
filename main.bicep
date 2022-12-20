@@ -242,10 +242,6 @@ module firewall 'modules/AzureFirewall.bicep' = {
   }
 dependsOn: [
   vhub
-  vWAN
-  Spoke02
-  Spoke01
-  Spoke03
 ]
 }
 
@@ -296,13 +292,11 @@ module vhubConnection03 'modules/vhubnetworkconnection.bicep' = {
     labels: labels03
     RouteTableName: vWanRouteTable.name
     SpokeName: Spoke03.name
-    vhubconnectionname: vhubConnectionName01
+    vhubconnectionname: vhubConnectionName03
     vhubname: vhub.name
   }
   dependsOn: [
-    Spoke03
-    vhub
-    vWanRouteTable
+    vhubConnection02
   ]
 }
 
@@ -316,13 +310,11 @@ module vhubConnection02 'modules/vhubnetworkconnection.bicep' = {
     labels: labels02
     RouteTableName: vWanRouteTable.name
     SpokeName: Spoke02.name
-    vhubconnectionname: vhubConnectionName01
+    vhubconnectionname: vhubConnectionName02
     vhubname: vhub.name
   }
   dependsOn: [
-    Spoke02
-    vhub
-    vWanRouteTable
+    vhubConnection01
   ]
 }
 
