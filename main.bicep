@@ -382,3 +382,55 @@ module Desktop1 'modules/Compute.bicep' = {
     Spoke01
   ]
 }
+
+module Desktop2 'modules/Compute.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: '${vmName}S02S02'
+  params: {
+    adminPassword: adminPassword
+    location: location
+    imageOffer: imageOffer
+    imageOSsku: imageOSsku
+    imagePublisher: imagePublisher
+    imageVersion: imageVersion
+    sakind: sakind
+    storageAccountPrefix: storageAccountPrefix
+    storageskuname: storageskuname
+    subnetName: Spoke02S02.name
+    vmName: '${vmName}S02S02'
+    vmSize: vmSize
+    vNetName: Spoke02.name
+    vnetrgname: NetworkRG.name
+  }
+  dependsOn: [
+    computeRG
+    Spoke02S02
+    Spoke02
+  ]
+}
+
+module Desktop3 'modules/Compute.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: '${vmName}S03S01'
+  params: {
+    adminPassword: adminPassword
+    location: location
+    imageOffer: imageOffer
+    imageOSsku: imageOSsku
+    imagePublisher: imagePublisher
+    imageVersion: imageVersion
+    sakind: sakind
+    storageAccountPrefix: storageAccountPrefix
+    storageskuname: storageskuname
+    subnetName: Spoke03S01.name
+    vmName: '${vmName}S03S01'
+    vmSize: vmSize
+    vNetName: Spoke03.name
+    vnetrgname: NetworkRG.name
+  }
+  dependsOn: [
+    computeRG
+    Spoke03S01
+    Spoke03
+  ]
+}
