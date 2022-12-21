@@ -7,6 +7,7 @@ param Spoke01Name string
 param Spoke02Name string
 param Spoke03Name string
 param NetworkRGName string
+param ComputeRGName string
 param firewallName string
 param Spoke01Address string
 param Spoke02Address string
@@ -22,6 +23,19 @@ param routetTblname string
 param vhubConnectionName01 string
 param vhubConnectionName02 string
 param vhubConnectionName03 string
+
+// Compute Parameters
+param imageOffer string
+param imageOSsku string
+param imagePublisher string 
+param imageVersion string
+param sakind string
+param storageAccountPrefix string
+param storageskuname string
+param vmName string
+param vmSize string 
+@secure()
+param adminPassword string
 
 // Firewall Parameters
 param firewallPolicyName string
@@ -71,9 +85,19 @@ var destinations = [
   S03Subnet2Prefix
 ]
 
+//Resource Groups
+module computeRG 'modules/ResourceGroup.bicep' = {
+  name: ComputeRGName
+  scope: subscription()
+  params: {
+    location: location
+    resourceGroupName: ComputeRGName
+  }
+}
+
 module NetworkRG 'modules/ResourceGroup.bicep' = {
   name: NetworkRGName
-  scope: subscription('635a2a50-5b7c-4391-adc5-468d76cd1ce3')
+  scope: subscription()
   params: {
     location: location
     resourceGroupName: NetworkRGName
@@ -330,5 +354,31 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
   }
   dependsOn: [
     NetworkRG
+  ]
+}
+
+module Desktop1 'modules/Compute.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: vmName
+  params: {
+    adminPassword: adminPassword
+    location: location
+    imageOffer: imageOffer
+    imageOSsku: imageOSsku
+    imagePublisher: imagePublisher
+    imageVersion: imageVersion
+    sakind: sakind
+    storageAccountPrefix: storageAccountPrefix
+    storageskuname: storageskuname
+    subnetName: Spoke01S01.name
+    vmName: '${vmName}S01S01'
+    vmSize: vmSize
+    vNetName: Spoke01.name
+    vnetrgname: NetworkRG.name
+  }
+  dependsOn: [
+    computeRG
+    Spoke01S01
+    Spoke01
   ]
 }

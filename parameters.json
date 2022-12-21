@@ -8,6 +8,9 @@
         "NetworkRGName" :{
             "value" : "ConnectRG"
         },
+        "ComputeRGName" :{
+            "value" : "ComputeRG"
+        },
         "Spoke01Name" : {
             "value": "Spoke-01"
         },
@@ -70,6 +73,33 @@
         },  
         "routetTblname" :{
             "value": "vHubRTTable"
-        }
+        },
+        "imageOSsku" :{
+            "value": "2022-datacenter-g2"       
+         },
+         "imagePublisher" :{
+            "value": "MicrosoftWindowsServer"       
+         },
+         "imageOffer" :{
+            "value": "WindowsServer"       
+         },
+         "imageVersion" :{
+            "value": "latest"       
+         },
+         "vmSize" :{
+            "value": "Standard_B2ms"       
+         },
+         "vmName" :{
+            "value": "CPU"       
+         },
+         "storageAccountPrefix" :{
+            "value": "stg"       
+         },
+         "sakind" : {
+            "value": "StorageV2"
+         },  
+         "storageskuname" : {
+            "value": "Standard_LRS"
+         }       
     }
 }

@@ -6,17 +6,30 @@ param subnetName string
 @description(' Name of the resourcegroup hosting the vnet')
 param vnetrgname string
 
-param vmname string
+param vmName string
 
-param location string = resourceGroup().location
+param location string 
 
 //virtual Machine Variables
 
 @description('To obtain vmsize run the following command: Get-AzVMSize -Location <replace with desired location>')
-param vmSize string = 'Basic_A3'
+@allowed([
+  'Standard_A3'
+  'Standard_F4'
+  'Standard_B2ms'
+])
+param vmSize string
+@allowed([
+  'MicrosoftWindowsServer'
+  'Canonical'
+])
+param imagePublisher string
 
-param imagePublisher string = 'MicrosoftWindowsServer'
-param imageOffer string = 'WindowsServer'
+@allowed([
+  'WindowsServer'
+  'UbuntuServer'
+])
+param imageOffer string
 
 @description('The Windows version for the VM. This will pick a fully patched image of this given Windows version.')
 @allowed([
@@ -81,12 +94,12 @@ param imageOffer string = 'WindowsServer'
 '2022-datacenter-smalldisk'
 '2022-datacenter-smalldisk-g2'
 ])
-param imageOSsku string = '2022-datacenter-g2'
-param imageversion string = 'latest'
+param imageOSsku string
+param imageVersion string
 
 @secure()
 param adminPassword string 
-param adminUsername string = '${vmname}-Admin'
+param adminUsername string = '${vmName}-Admin'
 
 // Storage Account Variables
 
@@ -103,7 +116,7 @@ param adminUsername string = '${vmname}-Admin'
 param storageskuname string
 
 @maxLength(8)
-param storageaccountprefix string = 'stg'
+param storageAccountPrefix string
 
 
 
@@ -111,10 +124,9 @@ param storageaccountprefix string = 'stg'
   'StorageV2'
   'FileStorage'
   'BlockBlobStorage'
-  'Storage'
 ])
 param sakind string
-var saname = '${toLower(storageaccountprefix)}${uniqueString(resourceGroup().id)}'
+var saname = '${toLower(storageAccountPrefix)}${uniqueString(resourceGroup().id)}'
 
 ///////////////////////////
 // RESOURCES AND MODULES//
@@ -130,17 +142,15 @@ resource vmStorage 'Microsoft.Storage/storageAccounts@2021-09-01' = {
 }
 
 resource vmnic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
-  name: '${vmname}-NIC'
+  name: '${vmName}-NIC'
   location: location
   dependsOn: [
   ]
   properties:{
     ipConfigurations:[
       {
-        name: '${vmname}-IPconfig'
+        name: '${vmName}-IPconfig'
         properties: {
-          publicIPAddress:{
-          }
           subnet:{
             id: resourceId(vnetrgname,'Microsoft.Network/virtualNetworks/subnets',vNetName, subnetName)
           }
@@ -151,7 +161,7 @@ resource vmnic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
 }
 
 resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
-  name: vmname
+  name: vmName
   location: location
   dependsOn:[
     
@@ -164,14 +174,14 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
     osProfile:{
       adminPassword: adminPassword
       adminUsername: adminUsername
-      computerName: vmname
+      computerName: vmName
     }
     storageProfile:{
       imageReference:{
         publisher: imagePublisher
         offer: imageOffer
         sku: imageOSsku
-        version: imageversion
+        version: imageVersion
       }
       osDisk: {
         createOption: 'FromImage'
@@ -207,21 +217,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 } 
 
 
-//////////////////////Powershell Helpfuls/////////////////////////
-//////////////////////////////////////////////////////////////////
 
-// Get-AzVMSize -Location westus2
-
-// Get-AzVMImagePublisher -location westus2 | where {$_.PublisherName.Contains("Microsoft")}
-// Get-AzVMImageOffer -Location westus2 -PublisherName 'MicrosoftWindowsServer'
-// Get-AzVMImagesku -Location westus2 -PublisherName 'MicrosoftWindowsServer'  -Offer WindowsServer
-// Get-AzVMImage -Location westus2 -PublisherName 'MicrosoftWindowsServer'  -Offer WindowsServer -Skus 2022-datacenter-core-g2
-
-//////////////////////Popular Publisher Names//////////////////////
-///////////////////////////////////////////////////////////////////
-
-// Canonical
-// MicrosoftWindowsServer
-// MicrosoftWindowsDesktop
-// RedHat
 
