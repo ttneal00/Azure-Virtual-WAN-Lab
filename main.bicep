@@ -351,15 +351,17 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
     ruleCollectionName: 'Default-Internat'
     fwpolthreatintelmode: 'Alert'
     location: location
+    translatedAddress: Desktop3.outputs.ipaddress
   }
   dependsOn: [
     NetworkRG
+    Desktop3
   ]
 }
 
 module Desktop1 'modules/Compute.bicep' = {
   scope: resourceGroup(ComputeRGName)
-  name: vmName
+  name: '${vmName}S01S01'
   params: {
     adminPassword: adminPassword
     location: location
