@@ -35,3 +35,7 @@ resource azurefirewall 'Microsoft.Network/azureFirewalls@2021-08-01' = {
     
   }
 }
+
+output ipaddress string = azurefirewall.properties.hubIPAddresses.privateIPAddress
+output Azurefirewall string = azurefirewall.properties.ipConfigurations[1].properties.publicIPAddress.id
+output azfw string = azurefirewall.properties.ipConfigurations[0].properties.publicIPAddress.id
