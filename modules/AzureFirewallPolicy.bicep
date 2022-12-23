@@ -1,6 +1,7 @@
 param azfwpolname string 
 param location string 
 
+
 @allowed([
 'Alert'
 'Deny'
@@ -8,7 +9,9 @@ param location string
 ])
 param fwpolthreatintelmode string
 param translatedAddress string
-
+param destinationAddress string
+param translatedPort string
+param destinationPorts string
 //param azfwrcgrpname string
 param azfwrcgrppriority int
 //param azfwrctype string
@@ -40,12 +43,12 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
         action:{
           type: 'Allow'
         }
-                name: 'RC-01'
-        priority:100
+                name: '${azfwpolname}Internet'
+        priority:500
         rules:[
           {
             ruleType: 'ApplicationRule'
-            name: 'Default-Internet'
+            name: ruleCollectionName
             sourceAddresses: [
               '*'
             ]
@@ -69,11 +72,35 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
           }
         ]
       }
+      {
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action:{
+          type: 'Allow'
+        }
+                name: '${azfwpolname}Jumpbox'
+              
+        priority:600
+        rules:[
+          {
+            ruleType:'NatRule'
+            description: 'JumpBox Rule'
+            destinationPorts: [destinationPorts]
+            sourceAddresses: ['*']
+            translatedAddress: translatedAddress
+            translatedPort: translatedPort
+            ipProtocols: ['TCP']
+            destinationAddresses: [destinationAddress]
+            
+  
+          }
+        ]
+      }
     ]
 
       
     }
   
   }
+
 }
 

@@ -85,6 +85,19 @@ var destinations = [
   S03Subnet2Prefix
 ]
 
+// Firewall Policies
+param translatedPort string
+param ruleCollectionName string
+@allowed([
+  'Alert' 
+  'Deny' 
+  'Off'
+])
+param fwpolthreatintelmode string
+param azfwrcgrppriority int
+param destinationPorts string
+
+
 //Resource Groups
 module computeRG 'modules/ResourceGroup.bicep' = {
   name: ComputeRGName
@@ -347,11 +360,15 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
   name:  firewallPolicyName
   params: {
     azfwpolname: firewallPolicyName
-    azfwrcgrppriority: 500
-    ruleCollectionName: 'Default-Internat'
-    fwpolthreatintelmode: 'Alert'
+    azfwrcgrppriority: azfwrcgrppriority
+    ruleCollectionName: ruleCollectionName
+    fwpolthreatintelmode: fwpolthreatintelmode
     location: location
     translatedAddress: Desktop3.outputs.ipaddress
+    translatedPort: translatedPort
+    destinationAddress: Desktop3.outputs.ipaddress
+    destinationPorts: destinationPorts
+
   }
   dependsOn: [
     NetworkRG

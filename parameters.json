@@ -59,6 +59,18 @@
         "firewallPolicyName" : {
             "value": "FWPolicy-01"
         },
+        "ruleCollectionName" : {
+            "value": "DefaultCollection"
+        },
+        "azfwrcgrppriority" : {
+            "value": 500
+        },
+        "fwpolthreatintelmode" : {
+            "value": "Alert"
+        },
+        "destinationPorts" : {
+            "value": "3389"
+        },
         "azfwskuname" : {
             "value": "AZFW_Hub"
         },
@@ -100,6 +112,7 @@
          },  
          "storageskuname" : {
             "value": "Standard_LRS"
-         }       
+         }  
+
     }
 }
