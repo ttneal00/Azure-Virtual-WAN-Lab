@@ -216,7 +216,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 
 } 
 
-output ipaddress string = vmnic.properties.ipConfigurations[1].properties.privateIPAddress
+output ipaddress string = vmnic.properties.ipConfigurations[0].properties.privateIPAddress
 
 
 

@@ -75,39 +75,5 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
     }
   
   }
-  resource dnatrule 'ruleCollectionGroups' = {
-    name: ruleCollectionName
-    dependsOn: [
-      
-    ]
-    properties: {
-    priority: azfwrcgrppriority
-    ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        action:{
-          type: 'Allow'
-        }
-                name: 'RC-01'
-        priority:300
-        rules:[
-          {
-            ruleType:'NatRule'
-            description: 'JumpBox Rule'
-            destinationPorts: ['8899']
-            sourceAddresses: ['*']
-            translatedAddress: translatedAddress
-            translatedPort: '3389'
-            
-  
-          }
-        ]
-      }
-    ]
-  
-      
-    }
-  
-  }
 }
 
