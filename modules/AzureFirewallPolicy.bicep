@@ -43,7 +43,7 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
         action:{
           type: 'Allow'
         }
-                name: '${azfwpolname}Internet'
+                name: '${azfwpolname}Internet/DefaultApplicationRuleCollectionGroup'
         priority:500
         rules:[
           {
@@ -74,12 +74,11 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
       }
 
       {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        ruleCollectionType: 'FirewallPolicyNatRuleCollection'
         action:{
           type: 'Allow'
         }
-                name: '${azfwpolname}Jumpbox'
-              
+        name: '${azfwpolname}DNats'
         priority:600
         rules:[
           {
@@ -91,16 +90,19 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
             translatedPort: translatedPort
             ipProtocols: ['TCP']
             destinationAddresses: [destinationAddress]
-            
+             name: '${azfwpolname}Jumpbox'
   
           }
-        ]
+
+        ] 
+         
       }
+    
     ]
 
       
     }
-  
+   
   }
 
 }
