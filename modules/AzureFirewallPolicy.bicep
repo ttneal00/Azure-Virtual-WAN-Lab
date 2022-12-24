@@ -72,6 +72,7 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
           }
         ]
       }
+
       {
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action:{

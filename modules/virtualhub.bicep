@@ -15,6 +15,9 @@ resource vhub 'Microsoft.Network/virtualHubs@2021-08-01' = {
      id: resourceId('Microsoft.Network/virtualWans',vWanname)
    }
 
+  
    
   }
+
 }
+output publicIP string = vhub.properties.
