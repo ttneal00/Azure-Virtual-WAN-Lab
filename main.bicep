@@ -279,6 +279,7 @@ module firewall 'modules/AzureFirewall.bicep' = {
   }
 dependsOn: [
   vhub
+  FWPolicy01
 ]
 }
 
