@@ -59,9 +59,6 @@
         "firewallPolicyName" : {
             "value": "FWPolicy-01"
         },
-        "ruleCollectionName" : {
-            "value": "DefaultCollection"
-        },
         "azfwrcgrppriority" : {
             "value": 500
         },

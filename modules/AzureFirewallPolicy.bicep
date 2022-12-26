@@ -15,7 +15,6 @@ param destinationPorts string
 //param azfwrcgrpname string
 param azfwrcgrppriority int
 //param azfwrctype string
-param ruleCollectionName string
 //param azfwrulename string
 //param azfwruleType string
 //param azfwsource string
@@ -31,7 +30,7 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
   }
 
   resource azfwrcs 'ruleCollectionGroups' = {
-    name: ruleCollectionName
+    name: 'DefaultNetworkRuleCollectionGroup'
     dependsOn: [
       
     ]
@@ -43,12 +42,12 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
         action:{
           type: 'Allow'
         }
-                name: '${azfwpolname}Internet/DefaultApplicationRuleCollectionGroup'
+                name: '${azfwpolname}Internet'
         priority:500
         rules:[
           {
             ruleType: 'ApplicationRule'
-            name: ruleCollectionName
+            name: 'InetOutBound'
             sourceAddresses: [
               '*'
             ]
@@ -76,9 +75,9 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
       {
         ruleCollectionType: 'FirewallPolicyNatRuleCollection'
         action:{
-          type: 'Allow'
+          type: 'Dnat'
         }
-        name: '${azfwpolname}DNats'
+        name: 'DefaultDnatRuleCollectionGroup'
         priority:600
         rules:[
           {
@@ -90,7 +89,7 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
             translatedPort: translatedPort
             ipProtocols: ['TCP']
             destinationAddresses: [destinationAddress]
-             name: '${azfwpolname}Jumpbox'
+            name: '${azfwpolname}Jumpbox'
   
           }
 

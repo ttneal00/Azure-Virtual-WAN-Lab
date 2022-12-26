@@ -87,7 +87,6 @@ var destinations = [
 
 // Firewall Policies
 param translatedPort string
-param ruleCollectionName string
 @allowed([
   'Alert' 
   'Deny' 
@@ -362,7 +361,6 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
   params: {
     azfwpolname: firewallPolicyName
     azfwrcgrppriority: azfwrcgrppriority
-    ruleCollectionName: ruleCollectionName
     fwpolthreatintelmode: fwpolthreatintelmode
     location: location
     translatedAddress: Desktop3.outputs.ipaddress
