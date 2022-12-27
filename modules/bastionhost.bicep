@@ -50,3 +50,4 @@ resource bastionHostres 'Microsoft.Network/bastionHosts@2020-07-01' = {
 
 
 output IPaddress string = StandardStaticPip.properties.ipAddress
+

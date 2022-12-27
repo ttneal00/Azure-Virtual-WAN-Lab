@@ -239,15 +239,26 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   ]
  }
 
- module spoke03Bastion 'modules/subnet.bicep' = {
+ module bastionnsg 'modules/bastionnsg.bicep' = {
+  scope: resourceGroup(NetworkRGName)
+  name: '${Spoke03Name}-BastionNSG'
+  params: {
+    bastionHostName: bastionHostName
+    location: location
+  }
+ }
+
+ module spoke03Bastion 'modules/subnet-nsg.bicep' = {
   name: '${Spoke03Name}-BastionSN'
   scope: resourceGroup(NetworkRGName)
   params: {
     addressprefix: S03BastionPrefix
     subnetname: '${Spoke03Name}/AzureBastionSubnet'
+    nsgid: bastionnsg.outputs.bastionHostNSGId
   }
   dependsOn: [
     Spoke03S02
+    bastionnsg
   ]
  }
 
