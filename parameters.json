@@ -35,6 +35,9 @@
         "Subnet02" : {
             "value": "10.0/24"
         } ,
+        "BastionSN" : {
+            "value": "50.0/26"
+        } ,
         "vHubName" : {
             "value": "Vhub01"
         },
@@ -64,13 +67,7 @@
         },
         "fwpolthreatintelmode" : {
             "value": "Alert"
-        },
-        "destinationPorts" : {
-            "value": "8889"
-        },
-        "translatedPort" : {
-            "value": "3389"
-        },
+        },       
         "azfwskuname" : {
             "value": "AZFW_Hub"
         },
@@ -112,7 +109,17 @@
          },  
          "storageskuname" : {
             "value": "Standard_LRS"
-         }  
+         },
+
+         "publicIPAddressName" : {
+            "value": "BastionPublicIP"
+         },
+         "bastionHostName" : {
+            "value": "EnvBastion"
+         },
+         "stringData" : {
+            "value": "293517276"
+         }
 
     }
 }

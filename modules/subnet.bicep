@@ -10,3 +10,6 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2022-07-01' = {
     addressPrefix: addressprefix
   }
 }
+
+
+output subnetid string = subnet.id

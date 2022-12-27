@@ -1,5 +1,7 @@
 targetScope = 'subscription' 
 
+param stringData string
+var base64String = base64(stringData)
 // PARAMETERS
 
 param location string
@@ -15,6 +17,7 @@ param Spoke03Address string
 param vhubAddress string
 param Subnet01 string
 param Subnet02 string
+param BastionSN string
 param vHubName string
 param vWANname string
 param destinationType string
@@ -36,6 +39,10 @@ param vmName string
 param vmSize string 
 @secure()
 param adminPassword string
+
+// BastionHost Name
+param bastionHostName string
+param publicIPAddressName string
 
 // Firewall Parameters
 param firewallPolicyName string
@@ -74,6 +81,7 @@ var S02Subnet2Prefix = '${Spoke02Address}${Subnet02}'
 // Spoke03 Subnets
 var S03Subnet1Prefix = '${Spoke03Address}${Subnet01}'
 var S03Subnet2Prefix = '${Spoke03Address}${Subnet02}'
+var S03BastionPrefix = '${Spoke03Address}${BastionSN}'
 
 // Default Route Table
 var destinations = [
@@ -86,7 +94,6 @@ var destinations = [
 ]
 
 // Firewall Policies
-param translatedPort string
 @allowed([
   'Alert' 
   'Deny' 
@@ -94,7 +101,6 @@ param translatedPort string
 ])
 param fwpolthreatintelmode string
 param azfwrcgrppriority int
-param destinationPorts string
 
 
 //Resource Groups
@@ -233,6 +239,19 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   ]
  }
 
+ module spoke03Bastion 'modules/subnet.bicep' = {
+  name: '${Spoke03Name}-BastionSN'
+  scope: resourceGroup(NetworkRGName)
+  params: {
+    addressprefix: S03BastionPrefix
+    subnetname: '${Spoke03Name}/${Spoke03Name}-Bastion'
+  }
+  dependsOn: [
+    Spoke03
+    Spoke03S01
+  ]
+ }
+
 module vWAN 'modules/vWAN.bicep' = {
   scope: resourceGroup(NetworkRGName)
   name: vWANname
@@ -363,11 +382,6 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
     azfwrcgrppriority: azfwrcgrppriority
     fwpolthreatintelmode: fwpolthreatintelmode
     location: location
-    translatedAddress: Desktop3.outputs.ipaddress
-    translatedPort: translatedPort
-    destinationAddress: Desktop3.outputs.ipaddress
-    destinationPorts: destinationPorts
-
   }
   dependsOn: [
     NetworkRG
@@ -449,6 +463,20 @@ module Desktop3 'modules/Compute.bicep' = {
   dependsOn: [
     computeRG
     Spoke03S01
+    Spoke03
+  ]
+}
+
+module bastionHost 'modules/bastionhost.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: bastionHostName
+  params: {
+    domainNameLabel: '${bastionHostName}${base64String}'
+    publicIPAddressName: publicIPAddressName
+    subnetid: spoke03Bastion.outputs.subnetid
+    location: location
+  }
+  dependsOn: [
     Spoke03
   ]
 }

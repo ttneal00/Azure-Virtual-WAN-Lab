@@ -8,10 +8,6 @@ param location string
 'Off'
 ])
 param fwpolthreatintelmode string
-param translatedAddress string
-param destinationAddress string
-param translatedPort string
-param destinationPorts string
 //param azfwrcgrpname string
 param azfwrcgrppriority int
 //param azfwrctype string
@@ -22,6 +18,7 @@ param azfwrcgrppriority int
 resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
   name: azfwpolname
   location: location
+
   tags:{
     
   }
@@ -72,31 +69,6 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
         ]
       }
 
-      {
-        ruleCollectionType: 'FirewallPolicyNatRuleCollection'
-        action:{
-          type: 'Dnat'
-        }
-        name: 'DefaultDnatRuleCollectionGroup'
-        priority:600
-        rules:[
-          {
-            ruleType:'NatRule'
-            description: 'JumpBox Rule'
-            destinationPorts: [destinationPorts]
-            sourceAddresses: ['*']
-            translatedAddress: translatedAddress
-            translatedPort: translatedPort
-            ipProtocols: ['TCP']
-            destinationAddresses: [destinationAddress]
-            name: '${azfwpolname}Jumpbox'
-  
-          }
-
-        ] 
-         
-      }
-    
     ]
 
       
