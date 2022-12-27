@@ -226,7 +226,7 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   ]
  }
 
- module Spoke03S03 'modules/subnet.bicep' = {
+ module Spoke03S02 'modules/subnet.bicep' = {
   name: '${Spoke03Name}-S02'
   scope: resourceGroup(NetworkRGName)
   params: {
@@ -244,11 +244,10 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   scope: resourceGroup(NetworkRGName)
   params: {
     addressprefix: S03BastionPrefix
-    subnetname: '${Spoke03Name}/${Spoke03Name}-Bastion'
+    subnetname: '${Spoke03Name}/AzureBastionSubnet'
   }
   dependsOn: [
-    Spoke03
-    Spoke03S01
+    Spoke03S02
   ]
  }
 
@@ -438,6 +437,7 @@ module Desktop2 'modules/Compute.bicep' = {
     computeRG
     Spoke02S02
     Spoke02
+    Desktop1
   ]
 }
 
@@ -464,6 +464,7 @@ module Desktop3 'modules/Compute.bicep' = {
     computeRG
     Spoke03S01
     Spoke03
+    Desktop2
   ]
 }
 
@@ -471,12 +472,19 @@ module bastionHost 'modules/bastionhost.bicep' = {
   scope: resourceGroup(ComputeRGName)
   name: bastionHostName
   params: {
-    domainNameLabel: '${bastionHostName}${base64String}'
+    domainNameLabel: toLower('${bastionHostName}${base64String}')
     publicIPAddressName: publicIPAddressName
     subnetid: spoke03Bastion.outputs.subnetid
     location: location
   }
   dependsOn: [
-    Spoke03
+    spoke03Bastion
   ]
 }
+
+
+output firewallpublicIP string = firewall.outputs.ipaddress
+output desktop3UserName string = Desktop3.outputs.adminUserName
+output desktop2UserName string = Desktop2.outputs.adminUserName
+output desktop1UserName string = Desktop1.outputs.adminUserName
+
