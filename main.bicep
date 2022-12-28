@@ -246,6 +246,9 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
     bastionHostName: bastionHostName
     location: location
   }
+  dependsOn: [
+    NetworkRG
+  ]
  }
 
  module spoke03Bastion 'modules/subnet-nsg.bicep' = {
@@ -315,7 +318,7 @@ module vWanRouteTable 'modules/routetable.bicep' = {
   scope: resourceGroup(NetworkRGName)
   name: routetTblname
   params: {
-    azfwname: firewall.name
+    firewallID: firewall.outputs.firewallID
     destinations: destinations
     destinationtype: destinationType
     nextHoptype: nextHopType

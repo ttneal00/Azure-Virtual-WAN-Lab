@@ -2,7 +2,7 @@
 
 param routetTblname string
 param vhubname string
-param azfwname string
+param firewallID string
 @description('Next hop resource ID (Azure Firewall or VNet Connection')
 
 param destinations array
@@ -35,13 +35,24 @@ resource vWANhubRouteTable 'Microsoft.Network/virtualHubs/hubrouteTables@2021-08
   ]
    routes:[
      {
-       name: 'all-traffic'
-       nextHop: resourceId('Microsoft.Network/azureFirewalls', azfwname)
+       name: 'InternettoFirewall'
+       nextHop: firewallID
        nextHopType: nextHoptype
        destinationType: destinationtype
-       destinations: destinations
-       
+       destinations: [
+        '0.0.0.0/0'
+      ]
      }
-   ]
+    
+    {
+    name: 'InternalTraffic'
+    nextHop: firewallID
+    nextHopType: nextHoptype
+    destinationType: destinationtype
+    destinations: destinations
+    } 
+
+    ]
   }
 }
+
