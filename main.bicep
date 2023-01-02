@@ -54,9 +54,6 @@ param azfwskutier string
 param allowHubToRemoteVnetTransit bool = true
 param allowRemoteVnetToUseHubVnetGateways bool = true
 param enableInternetSecurity bool = true
-param labels01 string = 'Spoke-01'
-param labels02 string = 'Spoke-01'
-param labels03 string = 'Spoke-01'
 
 // Virtual WAN Parameters
 param allowBranchToBranchTraffic bool = true
@@ -72,12 +69,15 @@ var Spoke02CIDR = '${Spoke02Address}0.0/16'
 var Spoke03CIDR = '${Spoke03Address}0.0/16'
 var vhubCIDR = '${vhubAddress}0.0/16'
 
+
 // Spoke01 Subnets
 var S01Subnet1Prefix = '${Spoke01Address}${Subnet01}'
 var S01Subnet2Prefix = '${Spoke01Address}${Subnet02}'
+var S01BastionPrefix = '${Spoke01Address}${BastionSN}'
 // Spoke02 Subnets
 var S02Subnet1Prefix = '${Spoke02Address}${Subnet01}'
 var S02Subnet2Prefix = '${Spoke02Address}${Subnet02}'
+var S02BastionPrefix = '${Spoke02Address}${BastionSN}'
 // Spoke03 Subnets
 var S03Subnet1Prefix = '${Spoke03Address}${Subnet01}'
 var S03Subnet2Prefix = '${Spoke03Address}${Subnet02}'
@@ -161,6 +161,20 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   ]
  }
 
+ module spoke01Bastion 'modules/subnet-nsg.bicep' = {
+  name: '${Spoke01Name}-BastionSN'
+  scope: resourceGroup(NetworkRGName)
+  params: {
+    addressprefix: S01BastionPrefix
+    subnetname: '${Spoke01Name}/AzureBastionSubnet'
+    nsgid: bastionnsg.outputs.bastionHostNSGId
+  }
+  dependsOn: [
+    Spoke01S01
+    bastionnsg
+  ]
+ }
+
 // Spoke 2 Virtual Network
  module Spoke02 'modules/VirtualNetwork.bicep' = {
   name: Spoke02Name
@@ -174,6 +188,8 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
     NetworkRG
   ]
  }
+
+
 
  module Spoke02S01 'modules/subnet.bicep' = {
   name: '${Spoke02Name}-S01'
@@ -197,6 +213,20 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
   dependsOn: [
     Spoke02
     Spoke02S01
+  ]
+ }
+
+ module spoke02Bastion 'modules/subnet-nsg.bicep' = {
+  name: '${Spoke02Name}-BastionSN'
+  scope: resourceGroup(NetworkRGName)
+  params: {
+    addressprefix: S02BastionPrefix
+    subnetname: '${Spoke02Name}/AzureBastionSubnet'
+    nsgid: bastionnsg.outputs.bastionHostNSGId
+  }
+  dependsOn: [
+    Spoke02S01
+    bastionnsg
   ]
  }
 
@@ -338,7 +368,7 @@ module vhubConnection01 'modules/vhubnetworkconnection.bicep' = {
     allowHubToRemoteVnetTransit: allowHubToRemoteVnetTransit
     allowRemoteVnetToUseHubVnetGateways: allowRemoteVnetToUseHubVnetGateways
     enableInternetSecurity: enableInternetSecurity
-    labels: labels01
+    labels: Spoke01.name
     RouteTableName: vWanRouteTable.name
     SpokeName: Spoke01.name
     vhubconnectionname: vhubConnectionName01
@@ -358,7 +388,7 @@ module vhubConnection03 'modules/vhubnetworkconnection.bicep' = {
     allowHubToRemoteVnetTransit: allowHubToRemoteVnetTransit
     allowRemoteVnetToUseHubVnetGateways: allowRemoteVnetToUseHubVnetGateways
     enableInternetSecurity: enableInternetSecurity
-    labels: labels03
+    labels: Spoke03.name
     RouteTableName: vWanRouteTable.name
     SpokeName: Spoke03.name
     vhubconnectionname: vhubConnectionName03
@@ -376,7 +406,7 @@ module vhubConnection02 'modules/vhubnetworkconnection.bicep' = {
     allowHubToRemoteVnetTransit: allowHubToRemoteVnetTransit
     allowRemoteVnetToUseHubVnetGateways: allowRemoteVnetToUseHubVnetGateways
     enableInternetSecurity: enableInternetSecurity
-    labels: labels02
+    labels: Spoke02.name
     RouteTableName: vWanRouteTable.name
     SpokeName: Spoke02.name
     vhubconnectionname: vhubConnectionName02

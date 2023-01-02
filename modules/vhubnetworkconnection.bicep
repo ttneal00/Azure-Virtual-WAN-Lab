@@ -33,6 +33,9 @@ resource vhunconnectionname 'Microsoft.Network/virtualHubs/hubVirtualNetworkConn
             }
           ]
         }
+        vnetRoutes: {
+          staticRoutes: []
+        }
       }
 
       remoteVirtualNetwork: {

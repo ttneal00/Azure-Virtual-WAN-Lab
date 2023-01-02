@@ -81,7 +81,7 @@
             "value": "ResourceId"
         },  
         "routetTblname" :{
-            "value": "vHubRTTable"
+            "value": "defaultRouteTable"
         },
         "imageOSsku" :{
             "value": "2022-datacenter-g2"       
