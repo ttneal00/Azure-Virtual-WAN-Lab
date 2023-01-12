@@ -21,4 +21,4 @@ resource vhub 'Microsoft.Network/virtualHubs@2021-08-01' = {
 
 }
 output vhubID string = vhub.id
-output test string = vhub.properties.addressPrefix
+output addressPrefix string = vhub.properties.addressPrefix
