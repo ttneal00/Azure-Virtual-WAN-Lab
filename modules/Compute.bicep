@@ -93,6 +93,7 @@ param imageOffer string
 '2022-datacenter-g2'
 '2022-datacenter-smalldisk'
 '2022-datacenter-smalldisk-g2'
+'UbuntuServer'
 ])
 param imageOSsku string
 param imageVersion string
