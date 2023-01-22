@@ -170,7 +170,7 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
     nsgid: bastionnsg.outputs.bastionHostNSGId
   }
   dependsOn: [
-    Spoke01S01
+    Spoke01S02
     bastionnsg
   ]
  }
@@ -225,7 +225,7 @@ module Spoke01 'modules/VirtualNetwork.bicep' = {
     nsgid: bastionnsg.outputs.bastionHostNSGId
   }
   dependsOn: [
-    Spoke02S01
+    Spoke02S02
     bastionnsg
   ]
  }
@@ -523,6 +523,50 @@ module bastionHost 'modules/bastionhost.bicep' = {
   }
   dependsOn: [
     spoke03Bastion
+  ]
+}
+
+module spoke03BastionHost 'modules/bastionhost.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: '${bastionHostName}03'
+  params: {
+    domainNameLabel: toLower('${bastionHostName}${base64String}03')
+    publicIPAddressName: publicIPAddressName
+    subnetid: spoke03Bastion.outputs.subnetid
+    location: location
+  }
+  dependsOn: [
+    spoke03Bastion
+    spoke02BastionHost
+  ]
+}
+
+module spoke02BastionHost 'modules/bastionhost.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: '${bastionHostName}02'
+  params: {
+    domainNameLabel: toLower('${bastionHostName}${base64String}02')
+    publicIPAddressName: publicIPAddressName
+    subnetid: spoke02Bastion.outputs.subnetid
+    location: location
+  }
+  dependsOn: [
+    spoke02Bastion
+    spoke01BastionHost
+  ]
+}
+
+module spoke01BastionHost 'modules/bastionhost.bicep' = {
+  scope: resourceGroup(ComputeRGName)
+  name: '${bastionHostName}01'
+  params: {
+    domainNameLabel: toLower('${bastionHostName}${base64String}01')
+    publicIPAddressName: publicIPAddressName
+    subnetid: spoke03Bastion.outputs.subnetid
+    location: location
+  }
+  dependsOn: [
+    spoke01Bastion
   ]
 }
 
