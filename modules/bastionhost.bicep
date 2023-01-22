@@ -2,8 +2,8 @@
 ///// Parameters
 /////////////////////////
 
-param bastionHostName string = 'Bastionhost'
-param ipConfname string = 'bastionIpConf'
+param bastionHostName string 
+param ipConfname string 
 param location string 
 param subnetid string
 param domainNameLabel string 

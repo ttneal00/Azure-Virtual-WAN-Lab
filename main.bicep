@@ -512,28 +512,16 @@ module Desktop3 'modules/Compute.bicep' = {
   ]
 }
 
-module bastionHost 'modules/bastionhost.bicep' = {
-  scope: resourceGroup(ComputeRGName)
-  name: bastionHostName
-  params: {
-    domainNameLabel: toLower('${bastionHostName}${base64String}')
-    publicIPAddressName: publicIPAddressName
-    subnetid: spoke03Bastion.outputs.subnetid
-    location: location
-  }
-  dependsOn: [
-    spoke03Bastion
-  ]
-}
-
 module spoke03BastionHost 'modules/bastionhost.bicep' = {
   scope: resourceGroup(ComputeRGName)
   name: '${bastionHostName}03'
   params: {
     domainNameLabel: toLower('${bastionHostName}${base64String}03')
-    publicIPAddressName: publicIPAddressName
+    publicIPAddressName: '${publicIPAddressName}bh03'
     subnetid: spoke03Bastion.outputs.subnetid
     location: location
+    bastionHostName: '${bastionHostName}03'
+     ipConfname: '${publicIPAddressName}bh03'
   }
   dependsOn: [
     spoke03Bastion
@@ -546,9 +534,11 @@ module spoke02BastionHost 'modules/bastionhost.bicep' = {
   name: '${bastionHostName}02'
   params: {
     domainNameLabel: toLower('${bastionHostName}${base64String}02')
-    publicIPAddressName: publicIPAddressName
+    publicIPAddressName: '${publicIPAddressName}bh02'
     subnetid: spoke02Bastion.outputs.subnetid
     location: location
+    bastionHostName: '${bastionHostName}02'
+    ipConfname:  '${publicIPAddressName}bh02'
   }
   dependsOn: [
     spoke02Bastion
@@ -561,9 +551,11 @@ module spoke01BastionHost 'modules/bastionhost.bicep' = {
   name: '${bastionHostName}01'
   params: {
     domainNameLabel: toLower('${bastionHostName}${base64String}01')
-    publicIPAddressName: publicIPAddressName
-    subnetid: spoke03Bastion.outputs.subnetid
+    publicIPAddressName: '${publicIPAddressName}bh01'
+    subnetid: spoke01Bastion.outputs.subnetid
     location: location
+    bastionHostName: '${bastionHostName}01'
+    ipConfname: '${publicIPAddressName}bh01'
   }
   dependsOn: [
     spoke01Bastion
