@@ -1,6 +1,6 @@
 targetScope = 'subscription' 
 
-param stringData string
+param stringData string = 'one, two, three'
 var base64String = base64(stringData)
 // PARAMETERS
 
