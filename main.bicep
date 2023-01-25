@@ -103,6 +103,18 @@ param fwpolthreatintelmode string
 param azfwrcgrppriority int
 
 
+var sourceAddresses = [
+  Spoke01CIDR
+  Spoke02CIDR
+  Spoke03CIDR
+]
+
+var destinationAddresses = [
+  Spoke01CIDR
+  Spoke02CIDR
+  Spoke03CIDR
+]
+
 //Resource Groups
 module computeRG 'modules/ResourceGroup.bicep' = {
   name: ComputeRGName
@@ -425,6 +437,8 @@ module FWPolicy01 'modules/AzureFirewallPolicy.bicep' = {
     azfwrcgrppriority: azfwrcgrppriority
     fwpolthreatintelmode: fwpolthreatintelmode
     location: location
+    destinationAddresses: destinationAddresses
+    sourceAddresses: sourceAddresses
   }
   dependsOn: [
     NetworkRG

@@ -1,5 +1,7 @@
 param azfwpolname string 
 param location string 
+param destinationAddresses array
+param sourceAddresses array
 
 
 @allowed([
@@ -67,6 +69,44 @@ resource azfwpolicy 'Microsoft.Network/firewallPolicies@2021-08-01' = {
 
           }
         ]
+      }
+      {
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action: {
+          type: 'Allow'
+        }
+        name: 'RDP'
+        priority:100
+        rules: [
+          {
+            ruleType: 'NetworkRule'
+            description: 'RDP Access to Remote PCs'
+            sourceAddresses: sourceAddresses
+            destinationAddresses: destinationAddresses
+            
+            destinationPorts: [
+              '3389'
+            ]
+            ipProtocols: [
+              'TCP'
+            ]
+
+          }
+          {
+            ruleType: 'NetworkRule'
+            description:'Pinging the PCs'
+            sourceAddresses: sourceAddresses
+            destinationAddresses: destinationAddresses
+            destinationPorts: [
+              '*'
+            ]
+            ipProtocols: [
+              'ICMP'
+            ]
+            name:'Pings'
+          }
+        ]
+
       }
 
     ]
